@@ -113,9 +113,10 @@ function paragraphs_previewer_form_preview() {
   );
 
   // Render the item.
-  // The field_view_value is usually used here but it fails since it does not
-  // set the correct field language due to field_language() indexing by
-  // entity id.
+  // Note: Using field_view_field() avoid issue with field_view_value()
+  // not finding the correct language due to field_language() static cache
+  // indexed by entity type and id which fails for multiple new entities of
+  // the same entity type that do not have an id.
   $host_entity->{$field_name}[$langcode] = array($field_item);
   $previewer_view_mode = variable_get('paragraphs_previewer_view_mode', 'default');
   $item_render = field_view_field($host_entity_type, $host_entity, $field_name, $previewer_view_mode, $langcode);
