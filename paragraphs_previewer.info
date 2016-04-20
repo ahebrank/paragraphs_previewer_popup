@@ -1,0 +1,5 @@
+name = Paragraphs Previewer
+description = Provides a rendered preview of a paragraphs item on an entity form.
+core = 7.x
+package = Fields
+dependencies[] = paragraphs

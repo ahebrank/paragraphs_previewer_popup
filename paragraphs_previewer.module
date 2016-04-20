@@ -1,0 +1,282 @@
+<?php
+/**
+ * @file
+ * Provides a rendered preview of a paragraphs item on an entity form..
+ */
+
+/**
+ * Implements hook_hook_info().
+ */
+function paragraphs_previewer_hook_info() {
+  return array(
+    'paragraphs_previewer_page_alter' => array(
+      'group' => 'paragraphs_previewer',
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function paragraphs_previewer_menu() {
+  $items = array();
+
+  $items['paragraphs-previewer/form/%'] = array(
+    'title' => 'Paragraphs Preview',
+    'description' => 'Renders a paragraph on an entity edit form.',
+    'page callback' => 'paragraphs_previewer_form_preview',
+    'page arguments' => array(2),
+    'access arguments' => array('view any paragraphs previewer'),
+    'file' => 'paragraphs_previewer.pages.inc',
+    'type' => MENU_CALLBACK
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function paragraphs_previewer_permission() {
+  $perms = array(
+    'view any paragraphs previewer' => array(
+      'title' => t('View any paragraphs previewer'),
+    ),
+  );
+  return $perms;
+}
+
+/**
+ * Creates a uri for the form preview.
+ *
+ * @param array $item_parents
+ *   An array of item parents from the field to the item delta.
+ * @param string $form_build_id
+ *   The form build id.
+ */
+function paragraphs_previewer_form_preview_uri(array $item_parents, $form_build_id = NULL) {
+  if (empty($item_parents)) {
+    return array();
+  }
+
+  $options = array(
+    'query' => array(
+      'token' => drupal_get_token('paragraphs_previewer_form_preview'),
+    ),
+  );
+
+  if (!empty($form_build_id)) {
+    $options['query']['form'] = $form_build_id;
+  }
+
+  return array(
+    'path' => 'paragraphs-previewer/form/' . implode('/', $item_parents),
+    'options' => $options,
+  );
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function paragraphs_previewer_page_alter(&$page) {
+  if (strpos($_GET['q'], 'paragraphs-previewer/') === 0) {
+    $page['#theme'] = 'paragraphs_previewer_page';
+
+    // Disable administration modules from adding output to the popup.
+    // @see http://drupal.org/node/914786
+    module_invoke_all('suppress', TRUE);
+
+    foreach (element_children($page) as $key) {
+      if ($key != 'content') {
+        unset($page[$key]);
+      }
+      else {
+        foreach (element_children($page[$key]) as $child_key) {
+          if ($child_key != 'system_main') {
+            unset($page[$key][$child_key]);
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Returns a list of supported field widgets.
+ *
+ * @return array
+ *   An array of field widgets.
+ */
+function paragraphs_previewer_supported_field_widgets() {
+  return array(
+    'paragraphs_embed',
+    'patternbuilder_paragraphs_embed',
+  );
+}
+
+/**
+ * Implements hook_field_widget_info_alter().
+ */
+function paragraphs_previewer_field_widget_info_alter(&$info) {
+  foreach (paragraphs_previewer_supported_field_widgets() as $widget_type) {
+    if (isset($info[$widget_type])) {
+      if (empty($info[$widget_type]['settings'])) {
+        $info[$widget_type]['settings'] = array();
+      }
+
+      $info[$widget_type]['settings']['paragraphs_previewer_enabled'] = 1;
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Implemented for field_ui_field_edit_form.
+ */
+function paragraphs_previewer_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
+  $instance = $form['#instance'];
+  $widget = $instance['widget'];
+  if (!in_array($widget['type'], paragraphs_previewer_supported_field_widgets(), TRUE)) {
+    return;
+  }
+
+  $settings = $widget['settings'] + field_info_widget_settings($widget['type']);
+  $form['instance']['widget']['settings']['paragraphs_previewer_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable paragraphs previewer button'),
+    '#default_value' => $settings['paragraphs_previewer_enabled'],
+  );
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function paragraphs_previewer_field_widget_form_alter(&$element, &$form_state, $context) {
+  $widget = $context['instance']['widget'];
+  if (in_array($widget['type'], paragraphs_previewer_supported_field_widgets(), TRUE)) {
+    foreach (element_children($element) as $delta) {
+      if (is_numeric($delta)) {
+        $element[$delta]['#process'][] = 'paragraphs_previewer_field_widget_form_process';
+      }
+    }
+  }
+}
+
+/**
+ * Process callback for the paragraph widget.
+ *
+ * The form build id is available during the #process callbacks.
+ *
+ * @param array $element
+ *   The preview form element.
+ * @param array $form_state
+ *   The form state.
+ * @param array $complete_form
+ *   The complete parent form of the element.
+ *
+ * @return array
+ *   The updated element array.
+ */
+function paragraphs_previewer_field_widget_form_process($element, $form_state, $complete_form) {
+  if (empty($complete_form['form_build_id']['#value'])) {
+    return $element;
+  }
+
+  $form_build_id = $complete_form['form_build_id']['#value'];
+
+  $field_parents = $element['#field_parents'];
+  $field_name = $element['#field_name'];
+  $langcode = $element['#language'];
+  $delta = $element['#delta'];
+  $field_state = field_form_get_state($field_parents, $field_name, $langcode, $form_state);
+
+  // Exit if the state instance is lost.
+  if (empty($field_state['instance']['widget']['settings'])) {
+    return;
+  }
+
+  $widget = $field_state['instance']['widget'];
+  $settings = $widget['settings'] + field_info_widget_settings($widget['type']);
+  $item_parents = array_merge($field_parents, array(
+    $field_name,
+    $langcode,
+    $delta,
+  ));
+
+  // Paragraph entity is available.
+  if (!empty($field_state['entity'][$delta])) {
+    $paragraph_item = $field_state['entity'][$delta];
+
+    // Add preview button if enabled and not editing.
+    if (!empty($settings['paragraphs_previewer_enabled']) && empty($paragraph_item->being_edited)) {
+      $preview_uri = paragraphs_previewer_form_preview_uri($item_parents, $form_build_id);
+      if (!empty($preview_uri)) {
+        $link_options = $preview_uri['options'] + array(
+          'html' => FALSE,
+          'attributes' => array(
+            'target' => '_blank',
+            'title' => t('Preview'),
+            'class' => array('button', 'paragraphs-previewer-button'),
+          ),
+        );
+
+        // Set the dialog title else the title attribute is used.
+        if (isset($element['paragraph_bundle_title']['info']['#markup'])) {
+          $link_options['attributes']['data-dialog-title'] = strip_tags($element['paragraph_bundle_title']['info']['#markup']);
+        }
+
+        // Determine preview access.
+        $preview_access = (!isset($element['#access']) || !empty($element['#access']));
+
+        // Preview button.
+        $element['actions']['paragraphs_previewer_button'] = array(
+          '#delta' => $delta,
+          '#name' => implode('_', $item_parents) . '_paragraphs_previewer_button',
+          'link' => array(
+            '#theme' => 'link',
+            '#text' => t('Preview'),
+            '#path' => $preview_uri['path'],
+            '#options' => $link_options,
+          ),
+          '#field_item_parents' => $item_parents,
+          '#weight' => 9999,
+          '#access' => $preview_access,
+          '#attached' => array(
+            'css' => array(
+              drupal_get_path('module', 'paragraphs_previewer') . '/css/paragraphs_previewer.css',
+            ),
+            'js' => array(
+              drupal_get_path('module', 'paragraphs_previewer') . '/js/paragraphs_previewer.js',
+            ),
+            'library' => array(
+              array('system', 'ui.dialog'),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function paragraphs_previewer_theme() {
+  return array(
+    'paragraphs_previewer_page' => array(
+      'render element' => 'page',
+      'template' => 'paragraphs-previewer-page',
+      'path' => drupal_get_path('module', 'paragraphs_previewer') . '/theme',
+    ),
+  );
+}
+
+/**
+ * Add messages to the page.
+ */
+function template_preprocess_paragraphs_previewer_page(&$vars) {
+  $vars['messages'] = theme('status_messages');
+}
