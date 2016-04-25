@@ -33,3 +33,9 @@ Provides a rendered preview of a paragraphs item while on an entity form.
     with no hosts.  This is needed to render new paragraphs and nested new
     paragraphs from the form state when the paragraphs module cannot determine
     the host.
+
+# Optional Support
+  * https://www.drupal.org/node/2201251: Drupal 7 core patch to fix
+    field_language's static cache collisions for multiple new entities of the
+    same entity type but different bundle. This patch could be needed depending
+    on the field formatter that is used to render the paragraphs field.
