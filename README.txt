@@ -6,7 +6,8 @@ Provides a rendered preview of a paragraphs item while on an entity form.
 
 * Preview the rendered paragraph before saving the entity.
 * Previewer can be enabled per field instance.
-*
+* Full width window to preview the design.
+* Resizable window to preview responsive designs.
 
 # Caveats
 
