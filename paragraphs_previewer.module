@@ -150,6 +150,7 @@ function paragraphs_previewer_field_widget_form(&$form, &$form_state, $field, $i
  * @see paragraphs_field_widget_form_build()
  */
 function paragraphs_previewer_field_widget_form_build(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  module_load_include('inc', 'paragraphs', 'paragraphs.field_widget');
   $element = paragraphs_field_widget_form_build($form, $form_state, $field, $instance, $langcode, $items, $delta, $element);
   $element['#process'][] = 'paragraphs_previewer_field_widget_form_process';
   return $element;
