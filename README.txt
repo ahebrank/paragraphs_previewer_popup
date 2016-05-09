@@ -21,8 +21,8 @@ Provides a rendered preview of a paragraphs item while on an entity form.
 * Install as usual, see https://drupal.org/node/895232 for further information.
 * Navigate to Administer >> Module: Enable "Paragraphs Previewer"..
 * Create / Edit a paragraphs field:
+  * Set widget to "Embedded with Previewer"
   * Set "Default edit mode" to "Closed" or "Preview".
-  * Check "Enable paragraphs previewer button."
 
 # Requirements
 

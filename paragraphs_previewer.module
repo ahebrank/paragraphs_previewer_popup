@@ -102,65 +102,57 @@ function paragraphs_previewer_page_alter(&$page) {
 }
 
 /**
- * Returns a list of supported field widgets.
- *
- * @return array
- *   An array of field widgets.
+ * Implements hook_field_widget_info().
  */
-function paragraphs_previewer_supported_field_widgets() {
+function paragraphs_previewer_field_widget_info() {
   return array(
-    'paragraphs_embed',
-    'patternbuilder_paragraphs_embed',
+    'paragraphs_previewer_embed' => array(
+      'label' => t('Embedded with Previewer'),
+      'field types' => array('paragraphs'),
+      'settings' => array(),
+      'behaviors' => array(
+        'multiple values' => FIELD_BEHAVIOR_CUSTOM,
+        'default value' => FIELD_BEHAVIOR_NONE,
+      ),
+    ),
   );
 }
 
 /**
- * Implements hook_field_widget_info_alter().
- */
-function paragraphs_previewer_field_widget_info_alter(&$info) {
-  foreach (paragraphs_previewer_supported_field_widgets() as $widget_type) {
-    if (isset($info[$widget_type])) {
-      if (empty($info[$widget_type]['settings'])) {
-        $info[$widget_type]['settings'] = array();
-      }
-
-      $info[$widget_type]['settings']['paragraphs_previewer_enabled'] = 1;
-    }
-  }
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_field_widget_form().
  *
- * Implemented for field_ui_field_edit_form.
+ * Extends paragraphs_field_widget_form().
  */
-function paragraphs_previewer_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
-  $instance = $form['#instance'];
-  $widget = $instance['widget'];
-  if (!in_array($widget['type'], paragraphs_previewer_supported_field_widgets(), TRUE)) {
-    return;
+function paragraphs_previewer_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  $elements = array();
+
+  if ($instance['widget']['type'] == 'paragraphs_previewer_embed') {
+    // Set to closed if open.
+    if (isset($instance['settings']['default_edit_mode']) && $instance['settings']['default_edit_mode'] == 'open') {
+      $instance['settings']['default_edit_mode'] = 'closed';
+    }
+
+    // Build paragraphs form.
+    module_load_include('inc', 'paragraphs', 'paragraphs.field_widget');
+    $elements = paragraphs_field_multiple_value_form($field, $instance, $langcode, $items, $form, $form_state, $delta, $element);
   }
 
-  $settings = $widget['settings'] + field_info_widget_settings($widget['type']);
-  $form['instance']['widget']['settings']['paragraphs_previewer_enabled'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Enable paragraphs previewer button'),
-    '#default_value' => $settings['paragraphs_previewer_enabled'],
-  );
+  return $elements;
 }
 
 /**
- * Implements hook_field_widget_form_alter().
+ * Implements hook_field_widget_form_build().
+ *
+ * The function paragraphs_field_multiple_value_form() calls this function
+ * for the widget module.
+ *
+ * @see paragraphs_field_multiple_value_form()
+ * @see paragraphs_field_widget_form_build()
  */
-function paragraphs_previewer_field_widget_form_alter(&$element, &$form_state, $context) {
-  $widget = $context['instance']['widget'];
-  if (in_array($widget['type'], paragraphs_previewer_supported_field_widgets(), TRUE)) {
-    foreach (element_children($element) as $delta) {
-      if (is_numeric($delta)) {
-        $element[$delta]['#process'][] = 'paragraphs_previewer_field_widget_form_process';
-      }
-    }
-  }
+function paragraphs_previewer_field_widget_form_build(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  $element = paragraphs_field_widget_form_build($form, $form_state, $field, $instance, $langcode, $items, $delta, $element);
+  $element['#process'][] = 'paragraphs_previewer_field_widget_form_process';
+  return $element;
 }
 
 /**
@@ -192,12 +184,11 @@ function paragraphs_previewer_field_widget_form_process($element, $form_state, $
   $field_state = field_form_get_state($field_parents, $field_name, $langcode, $form_state);
 
   // Exit if the state instance is lost.
-  if (empty($field_state['instance']['widget']['settings'])) {
+  if (empty($field_state['instance']['widget'])) {
     return;
   }
 
   $widget = $field_state['instance']['widget'];
-  $settings = $widget['settings'] + field_info_widget_settings($widget['type']);
   $item_parents = array_merge($field_parents, array(
     $field_name,
     $langcode,
@@ -209,7 +200,7 @@ function paragraphs_previewer_field_widget_form_process($element, $form_state, $
     $paragraph_item = $field_state['entity'][$delta];
 
     // Add preview button if enabled and not editing.
-    if (!empty($settings['paragraphs_previewer_enabled']) && empty($paragraph_item->being_edited)) {
+    if (empty($paragraph_item->being_edited)) {
       $preview_uri = paragraphs_previewer_form_preview_uri($item_parents, $form_build_id);
       if (!empty($preview_uri)) {
         $link_options = $preview_uri['options'] + array(
@@ -259,6 +250,30 @@ function paragraphs_previewer_field_widget_form_process($element, $form_state, $
   }
 
   return $element;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Implemented for field_ui_field_edit_form.
+ */
+function paragraphs_previewer_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
+  $instance = $form['#instance'];
+  $widget = $instance['widget'];
+
+  if ($widget['type'] == 'paragraphs_previewer_embed') {
+    // Remove open option.
+    if (isset($form['instance']['settings']['default_edit_mode']['#options'])) {
+      unset($form['instance']['settings']['default_edit_mode']['#options']['open']);
+    }
+
+    // Set to closed if open.
+    if (isset($form['instance']['settings']['default_edit_mode']['#default_value'])) {
+      if ($form['instance']['settings']['default_edit_mode']['#default_value'] == 'open') {
+        $form['instance']['settings']['default_edit_mode']['#default_value'] = 'closed';
+      }
+    }
+  }
 }
 
 /**
