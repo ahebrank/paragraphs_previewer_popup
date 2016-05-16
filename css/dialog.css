@@ -11,14 +11,16 @@ body.paragraphs-previewer-dialog-active {
 }
 .ui-dialog.paragraphs-previewer-ui-dialog #drupal-modal {
   padding: 10px;
-  background: #333;
+  background: #232323 url(/core/misc/loading.gif) no-repeat center center;
   overflow: hidden;
+}
+.ui-dialog.paragraphs-previewer-ui-dialog #drupal-modal.paragraphs-previewer-dialog-loaded {
+  background-image: none;
 }
 .ui-dialog.paragraphs-previewer-ui-dialog #drupal-modal > div {
   height: 100%;
 }
 .ui-dialog.paragraphs-previewer-ui-dialog .paragraphs-previewer-wrapper {
-  background: #fff;
   height: 100%;
 }
 .paragraphs-previewer-wrapper .paragraphs-previewer-iframe {

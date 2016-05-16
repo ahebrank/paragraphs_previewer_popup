@@ -58,6 +58,7 @@
   previewer.dialogUpdateForContent = function(dialog, $element, settings) {
     if (!dialog.isLoading && settings.maxHeight) {
       var $content = $('.paragraphs-previewer-iframe', $element).contents().find('body');
+
       if ($content.length) {
         // Fit content.
         var contentHeight = $content.outerHeight();
@@ -73,8 +74,15 @@
           fitHeight = 0.98 * settings.maxHeight;
         }
 
-        // Set to the new height.
-        settings.height = fitHeight;
+        // Set to the new height bounded by min and max.
+        var newHeight = fitHeight;
+        if (fitHeight < settings.minHeight) {
+           newHeight = settings.minHeight;
+        }
+        else if (fitHeight > settings.maxHeight) {
+          newHeight = settings.maxHeight;
+        }
+        settings.height = newHeight;
         $element.dialog('option', 'height', settings.height);
       }
     }
@@ -93,13 +101,13 @@
   previewer.dialogLoader = function(dialog, $element, settings) {
     var $loadedElements = $('iframe, img, video', $element);
     dialog.loadableCount = $loadedElements.length;
-
     if (dialog.loadableCount) {
       // Update settings after all content is loaded.
       $loadedElements.load(function(loadEvent) {
         dialog.loadedCount++;
         if (dialog.loadedCount == dialog.loadableCount) {
           dialog.isLoading = false;
+          $element.addClass('paragraphs-previewer-dialog-loaded')
           previewer.dialogUpdateForContent(dialog, $element, settings);
         }
       });
