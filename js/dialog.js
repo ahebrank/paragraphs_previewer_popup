@@ -115,6 +115,7 @@
     else {
       // No update needed since height is 'auto'.
       dialog.isLoading = false;
+      $element.addClass('paragraphs-previewer-dialog-loaded')
     }
   };
 
