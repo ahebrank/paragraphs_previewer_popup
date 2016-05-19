@@ -38,33 +38,10 @@ class InlineParagraphsPreviewerWidget extends InlineParagraphsWidget {
   /**
    * {@inheritdoc}
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings) {
-    // Open is not allowed with the previewer.
-    if (isset($settings['edit_mode']) && $settings['edit_mode'] = 'open') {
-      $settings['edit_mode'] = static::PARAGRAPHS_PREVIEWER_DEFAULT_EDIT_MODE;
-    }
-
-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public static function defaultSettings() {
     $settings = parent::defaultSettings();
     $settings['edit_mode'] = static::PARAGRAPHS_PREVIEWER_DEFAULT_EDIT_MODE;
     return $settings;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function settingsForm(array $form, FormStateInterface $form_state) {
-    $elements = parent::settingsForm($form, $form_state);
-    $edit_mode = $this->getSetting('edit_mode');
-    unset($elements['edit_mode']['#options']['open']);
-
-    return $elements;
   }
 
   /**
