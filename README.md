@@ -14,13 +14,13 @@ Provides a rendered preview of a paragraphs item while on an entity form.
 * Preview popup uses the front end theme to style the rendered markup.  This
   assumes that all styling is applied to that paragraph's markup and does not
   need any other page context / wrapping markup, example node markup.
+* You may need to add a "page--paragraphs-previewer.html.twig" template to
+  render your paragraphs without page wrappers.
 
 # Installation
 
-* Install "Paragraphs Previewer" module per https://www.drupal.org/node/1897420.
-* Create / Edit a paragraphs field:
-  * Set widget to "Paragraphs Previewer"
-  * Set "Default edit mode" to "Closed" or "Preview".
+* Install "Paragraphs Previewer" module.
+* Check "Enable preview" on a Paragraphs field widget (under Manage Form Display)
 
 # Requirements
 

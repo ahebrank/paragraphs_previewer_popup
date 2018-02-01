@@ -1,10 +1,10 @@
 dialog:
   version: 1.x
   js:
-    js/dialog.js: {}
+    js/paragraphs_previewer.dialog.js: {}
   css:
     component:
-      css/dialog.css: {}
+      css/paragraphs_previewer.dialog.css: {}
   dependencies:
     - core/jquery
     - core/jquery.ui.resizable
@@ -12,8 +12,15 @@ dialog:
     - core/drupalSettings
     - core/drupal.ajax
     - core/drupal.dialog.ajax
+
 preview-page:
   version: 1.x
   css:
     component:
-      css/preview_page.css: {}
+      css/paragraphs_previewer.preview_page.css: {}
+
+admin:
+  version: 1.x
+  css:
+    component:
+      css/paragraphs_previewer.admin.css: {}

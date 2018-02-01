@@ -1,0 +1,9 @@
+.js .paragraphs-previewer__link-container {
+    display: flex;
+    flex-wrap: nowrap;
+    padding-bottom: .5rem;
+}
+.js .paragraphs-previewer__link-container > div,
+.js .paragraphs-previewer__link-container > input {
+    margin-left: 1rem;
+}
