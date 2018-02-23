@@ -12,12 +12,12 @@ class FormGenerator {
         $element['top']['link_container'] = [
             '#type' => 'container',
             '#attributes' => [
-            'class' => 'paragraphs-previewer-popup__link-container',
+                'class' => 'paragraphs-previewer-popup__link-container',
             ],
             '#attached' => [
-            'library' => [
-                'paragraphs_previewer_popup/admin',
-            ],
+                'library' => [
+                    'paragraphs_previewer_popup/admin',
+                ],
             ],
             'previewer_button' => self::getPreviewButton($context, $element, $form_state),
             'links' => $links,
@@ -42,7 +42,7 @@ class FormGenerator {
         $previewer_element = [
             '#type' => 'submit',
             '#value' => t('Preview'),
-            '#name' => strtr($id_prefix, '-', '_') . '_previewer',
+            '#name' => strtr($id_prefix, '-', '_') . '_previewer_popup',
             '#weight' => 1,
             '#submit' => [['\Drupal\paragraphs_previewer_popup\FormHandlers', 'submitPreviewerItem']],
             '#field_item_parents' => $element_parents,
@@ -57,7 +57,7 @@ class FormGenerator {
             ],
             '#access' => $paragraphs_entity->access('view'),
             '#attributes' => [
-                'class' => ['paragraphs-previewer'],
+                'class' => ['paragraphs-previewer-popup'],
             ],
             '#previewer_dialog_title' => isset($element['top']['paragraph_type_title']['info']['#markup'])?
                 strip_tags($element['top']['paragraph_type_title']['info']['#markup']) : t('Preview'),

@@ -1,15 +1,16 @@
 <?php
 /**
  * @file
- * Theme functions for the media_entity module.
+ * Theme functions for the paragraphs_previewer_popup module.
  */
 
 use Drupal\Core\Render\Element;
 use Drupal\Core\Url;
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Render\BubbleableMetadata;
 
 /**
- * Prepares variables for theme paragraphs_previewer_modal_content.
+ * Prepares variables for theme paragraphs_previewer_popup_modal_content.
  *
  * Default template: paragraphs-previewer-modal-content.html.twig.
  *
@@ -31,7 +32,7 @@ function template_preprocess_paragraphs_previewer_popup_modal_content(&$variable
     $preview_url_render = [
       '#markup' => $preview_url_bubbeable->getGeneratedUrl(),
     ];
-    \Drupal\Core\Render\BubbleableMetadata::createFromRenderArray($preview_url_render)
+    BubbleableMetadata::createFromRenderArray($preview_url_render)
       ->merge($preview_url_bubbeable)
       ->applyTo($preview_url_render);
 

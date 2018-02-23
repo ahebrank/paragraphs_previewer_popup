@@ -23,7 +23,8 @@ body.paragraphs-previewer-popup-dialog-active {
 .ui-dialog.paragraphs-previewer-popup-ui-dialog .paragraphs-previewer-popup-wrapper {
   height: 100%;
 }
-.paragraphs-previewer-popup__wrapper .paragraphs-previewer-popup__iframe {
+.paragraphs-previewer-popup__wrapper,
+.paragraphs-previewer-popup__iframe {
   max-width: 100%;
   width: 100%;
   height: 100%;

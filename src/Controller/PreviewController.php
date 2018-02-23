@@ -22,10 +22,10 @@ class PreviewController extends ControllerBase {
    * Render a preview while on a form.
    *
    * This callback is mapped to the path
-   * 'paragraphs-previewer/form/{form_build_id}.
+   * 'paragraphs-previewer-popup/form/{form_build_id}.
    *
    * Usage:
-   * 'paragraphs-previewer/form/abcd1234?p[0]=field_name&p[1]=delta'.
+   * 'paragraphs-previewer-popup/form/abcd1234?p[0]=field_name&p[1]=delta'.
    *
    * @param string $form_build_id
    *   The form build id.
@@ -45,7 +45,7 @@ class PreviewController extends ControllerBase {
     }
 
     // Initialize render array.
-    $output_render = array();
+    $output_render = [];
 
     // Expand element parents.
     $element_parents_array = explode(':', $element_parents);
@@ -64,7 +64,7 @@ class PreviewController extends ControllerBase {
           $paragraph = $widget_state['paragraphs'][$field_delta]['entity'];
           $parent_entity = $this->findParentEntity($paragraph, $field_parents, $form_state, $form_entity);
           if ($parent_entity) {
-            $field_render = $this->paragraphsPreviewRenderParentField($paragraph, $field_name, $parent_entity);
+            $field_render = $this->renderParentField($paragraph, $field_name, $parent_entity);
             if ($field_render) {
               $output_render['preview'] = $field_render;
             }
@@ -75,9 +75,9 @@ class PreviewController extends ControllerBase {
 
     // Set empty message if nothing is rendered.
     if (empty($output_render)) {
-      $output_render['empty'] = array(
+      $output_render['empty'] = [
         '#markup' => $this->t('No preview available.'),
-      );
+      ];
     }
 
     // Add styles to cleanup display.
@@ -143,7 +143,7 @@ class PreviewController extends ControllerBase {
    * @return array|null
    *   A render array for the field.
    */
-  public function paragraphsPreviewRenderParentField(Paragraph $paragraph, $parent_field_name, ContentEntityBase $parent_entity = NULL) {
+  public function renderParentField(Paragraph $paragraph, $parent_field_name, ContentEntityBase $parent_entity = NULL) {
     if (!isset($parent_entity)) {
       $parent_entity = $paragraph->getParentEntity();
     }
@@ -153,7 +153,7 @@ class PreviewController extends ControllerBase {
       $parent_entity_type = $parent_entity->getEntityTypeId();
 
       if ($parent_entity->hasField($parent_field_name)) {
-        $parent_view_mode = \Drupal::config('paragraphs_previewer.settings')->get('previewer_view_mode');
+        $parent_view_mode = \Drupal::config('paragraphs_previewer_popup.settings')->get('previewer_view_mode');
         $parent_view_mode = $parent_view_mode ? $parent_view_mode : 'full';
 
         // Create a new paragraph with no id.

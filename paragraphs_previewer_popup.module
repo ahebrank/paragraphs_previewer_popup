@@ -14,7 +14,7 @@ use Drupal\paragraphs_previewer_popup\FormGenerator;
  */
 function paragraphs_previewer_popup_theme() {
   return [
-    'paragraphs_previewer_modal_content' => [
+    'paragraphs_previewer_popup_modal_content' => [
       'variables' => ['preview_url' => NULL],
       'file' => 'paragraphs_previewer_popup.theme.inc',
     ],
@@ -28,10 +28,10 @@ function paragraphs_previewer_popup_preprocess_html__paragraphs_previewer_popup(
   unset($variables['page_top']);
   unset($variables['page_bottom']);
   if (isset($variables['html_attributes'])) {
-    $variables['html_attributes']->addClass('paragraphs-previewer-html');
+    $variables['html_attributes']->addClass('paragraphs-previewer-popup-html');
   }
 
-  $variables['attributes']['class'][] = 'paragraphs-previewer';
+  $variables['attributes']['class'][] = 'paragraphs-previewer-popup';
 }
 
 /**
