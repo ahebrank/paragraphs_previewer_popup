@@ -13,9 +13,9 @@
  * @ingroup themeable
  */
 #}
-<div class="paragraphs-previewer-wrapper">
+<div class="paragraphs-previewer-popup__wrapper">
     {% if preview_url_string %}
-        <iframe src="{{ preview_url_string }}" class="paragraphs-previewer-iframe"></iframe>
+        <iframe src="{{ preview_url_string }}" class="paragraphs-previewer-popup__iframe"></iframe>
     {% else %}
         <p>
             {% trans %}

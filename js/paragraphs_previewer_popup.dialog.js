@@ -62,7 +62,7 @@
   };
 
   // Dialog listeners.
-  Drupal.behaviors.paragraphs_previewer_dialog = {
+  Drupal.behaviors.paragraphs_previewer_popup_dialog = {
     attach: function() {
       $(window).on({
         'dialog:beforecreate': function (event, dialog, $element, settings) {

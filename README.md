@@ -1,6 +1,6 @@
-# Paragraphs Previewer
+# Paragraphs Previewer Popup
 
-Provides a rendered preview of a paragraphs item while on an entity form.
+Provides a rendered preview of a paragraphs item while on an entity form. Forked from drupal/paragraphs_previewer, this module takes a different approach to how it is associated with the Paragraphs widgets.
 
 # Features
 
