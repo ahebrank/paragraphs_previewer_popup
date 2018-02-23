@@ -1,4 +1,4 @@
-paragraphs_previewer.form_preview:
+paragraphs_previewer_popup.form_preview:
   path: 'paragraphs-previewer-popup/form/{form_build_id}/{element_parents}'
   defaults:
     _controller: '\Drupal\paragraphs_previewer_popup\Controller\PreviewController::onForm'
