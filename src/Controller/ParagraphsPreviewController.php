@@ -10,9 +10,11 @@ namespace Drupal\paragraphs_previewer\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Drupal\Core\Form\FormState;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\paragraphs\Entity\Paragraph;
-use \Drupal\Core\Entity\ContentEntityBase;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceFormatterBase;
 
@@ -57,16 +59,16 @@ class ParagraphsPreviewController extends ControllerBase {
       $form_state = new FormState();
       $form = \Drupal::formBuilder()->getCache($form_build_id, $form_state);
 
-      if ($form) {
-        if ($parent_entity = $form_state->getFormObject()->getEntity()) {
-          $field_parents = $element_parents_array;
-          $field_delta = array_pop($field_parents);
-          // TODO: support langcode or is d8 always field_name:delta?
-          $field_name = array_pop($field_parents);
+      if ($form && ($form_entity = $form_state->getFormObject()->getEntity())) {
+        $field_parents = $element_parents_array;
+        $field_delta = array_pop($field_parents);
+        $field_name = array_pop($field_parents);
 
-          $widget_state = WidgetBase::getWidgetState($field_parents, $field_name, $form_state);
-          if (!empty($widget_state['paragraphs'][$field_delta]['entity'])) {
-            $paragraph = $widget_state['paragraphs'][$field_delta]['entity'];
+        $widget_state = WidgetBase::getWidgetState($field_parents, $field_name, $form_state);
+        if (!empty($widget_state['paragraphs'][$field_delta]['entity'])) {
+          $paragraph = $widget_state['paragraphs'][$field_delta]['entity'];
+          $parent_entity = $this->findParentEntity($paragraph, $field_parents, $form_state, $form_entity);
+          if ($parent_entity) {
             $field_render = $this->paragraphsPreviewRenderParentField($paragraph, $field_name, $parent_entity);
             if ($field_render) {
               $output_render['preview'] = $field_render;
@@ -79,7 +81,7 @@ class ParagraphsPreviewController extends ControllerBase {
     // Set empty message if nothing is rendered.
     if (empty($output_render)) {
       $output_render['empty'] = array(
-        '#markup' => t('No preview available.'),
+        '#markup' => $this->t('No preview available.'),
       );
     }
 
@@ -87,6 +89,49 @@ class ParagraphsPreviewController extends ControllerBase {
     $output_render['#attached']['library'][] = 'paragraphs_previewer/preview-page';
 
     return $output_render;
+  }
+
+  /**
+   * Find the parent entity of the paragraph.
+   *
+   * Finds any parent paragraphs else defaults to the form entity provided.
+   * Note: only paragraphs are supported as parent or intermediate entities.
+   *
+   * @param \Drupal\paragraphs\Entity\Paragraph $paragraph
+   *   The paragraph entity.
+   * @param array $field_parents
+   *   The field parents of the paragraph.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   The parent entity if found else the form entity.
+   */
+  public function findParentEntity(Paragraph $paragraph, array $field_parents, FormStateInterface $form_state, EntityInterface $form_entity = NULL) {
+    if (in_array('subform', $field_parents, TRUE)) {
+      // Traverse up to find the parent.
+      foreach (array_reverse($field_parents, TRUE) as $i => $element_key) {
+        if ($element_key === 'subform') {
+          // Slice one level above 'subform'.
+          $parent_field_parents = array_slice($field_parents, 0, $i);
+          if ($parent_field_parents) {
+            $parent_field_delta = array_pop($parent_field_parents);
+            $parent_field_name = array_pop($parent_field_parents);
+            $widget_state = WidgetBase::getWidgetState($parent_field_parents, $parent_field_name, $form_state);
+            if (!empty($widget_state['paragraphs'][$parent_field_delta]['entity'])) {
+
+              // Return first found.
+              return $widget_state['paragraphs'][$parent_field_delta]['entity'];
+            }
+          }
+
+          // Break on first found.
+          break;
+        }
+      }
+    }
+
+    return $form_entity;
   }
 
   /**
