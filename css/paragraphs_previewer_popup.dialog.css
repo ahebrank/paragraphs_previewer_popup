@@ -3,27 +3,27 @@
  * Styles for Paragraphs Previewer modal dialog.
  */
 
-body.paragraphs-previewer-dialog-active {
+body.paragraphs-previewer-popup-dialog-active {
   overflow: hidden;
 }
-.ui-dialog.paragraphs-previewer-ui-dialog {
+.ui-dialog.paragraphs-previewer-popup-ui-dialog {
   padding: 0;
 }
-.ui-dialog.paragraphs-previewer-ui-dialog #drupal-modal {
+.ui-dialog.paragraphs-previewer-popup-ui-dialog #drupal-modal {
   padding: 10px;
   background: #232323 url(/core/misc/loading.gif) no-repeat center center;
   overflow: hidden;
 }
-.ui-dialog.paragraphs-previewer-ui-dialog #drupal-modal.paragraphs-previewer-dialog-loaded {
+.ui-dialog.paragraphs-previewer-popup-ui-dialog #drupal-modal.paragraphs-previewer-popup-dialog-loaded {
   background-image: none;
 }
-.ui-dialog.paragraphs-previewer-ui-dialog #drupal-modal > div {
+.ui-dialog.paragraphs-previewer-popup-ui-dialog #drupal-modal > div {
   height: 100%;
 }
-.ui-dialog.paragraphs-previewer-ui-dialog .paragraphs-previewer-wrapper {
+.ui-dialog.paragraphs-previewer-popup-ui-dialog .paragraphs-previewer-popup-wrapper {
   height: 100%;
 }
-.paragraphs-previewer-wrapper .paragraphs-previewer-iframe {
+.paragraphs-previewer-popup__wrapper .paragraphs-previewer-popup__iframe {
   max-width: 100%;
   width: 100%;
   height: 100%;

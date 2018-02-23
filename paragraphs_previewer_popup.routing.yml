@@ -1,7 +1,7 @@
 paragraphs_previewer.form_preview:
-  path: 'paragraphs-previewer/form/{form_build_id}/{element_parents}'
+  path: 'paragraphs-previewer-popup/form/{form_build_id}/{element_parents}'
   defaults:
-    _controller: '\Drupal\paragraphs_previewer\Controller\ParagraphsPreviewController::onForm'
+    _controller: '\Drupal\paragraphs_previewer_popup\Controller\PreviewController::onForm'
   requirements:
-    _permission: 'view any paragraphs previewer'
+    _permission: 'view any paragraphs previewer popup'
     _csrf_token: 'TRUE'

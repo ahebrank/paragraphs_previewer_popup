@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\paragraphs_previewer\Controller;
+namespace Drupal\paragraphs_previewer_popup\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -16,7 +16,7 @@ use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceFormatterBase;
 /**
  * Previewer for paragraphs.
  */
-class ParagraphsPreviewController extends ControllerBase {
+class PreviewController extends ControllerBase {
 
   /**
    * Render a preview while on a form.
@@ -81,7 +81,7 @@ class ParagraphsPreviewController extends ControllerBase {
     }
 
     // Add styles to cleanup display.
-    $output_render['#attached']['library'][] = 'paragraphs_previewer/preview-page';
+    $output_render['#attached']['library'][] = 'paragraphs_previewer_popup/preview-page';
 
     return $output_render;
   }

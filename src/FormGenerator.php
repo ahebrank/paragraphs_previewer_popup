@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\paragraphs_previewer;
+namespace Drupal\paragraphs_previewer_popup;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Field\WidgetBase;
@@ -12,11 +12,11 @@ class FormGenerator {
         $element['top']['link_container'] = [
             '#type' => 'container',
             '#attributes' => [
-            'class' => 'paragraphs-previewer__link-container',
+            'class' => 'paragraphs-previewer-popup__link-container',
             ],
             '#attached' => [
             'library' => [
-                'paragraphs_previewer/admin',
+                'paragraphs_previewer_popup/admin',
             ],
             ],
             'previewer_button' => self::getPreviewButton($context, $element, $form_state),
@@ -38,24 +38,20 @@ class FormGenerator {
         $paragraphs_entity = $widget_state['paragraphs'][$delta]['entity'];
         $element_parents = array_merge($parents, [$field_name, $delta]);
         $id_prefix = implode('-', $element_parents);
-        
-        $paragraphs_entity = $widget_state['paragraphs'][$delta]['entity'];
-        $element_parents = array_merge($parents, [$field_name, $delta]);
-        $id_prefix = implode('-', $element_parents);
 
         $previewer_element = [
             '#type' => 'submit',
             '#value' => t('Preview'),
             '#name' => strtr($id_prefix, '-', '_') . '_previewer',
             '#weight' => 1,
-            '#submit' => [['\Drupal\paragraphs_previewer\FormHandlers', 'submitPreviewerItem']],
+            '#submit' => [['\Drupal\paragraphs_previewer_popup\FormHandlers', 'submitPreviewerItem']],
             '#field_item_parents' => $element_parents,
             '#limit_validation_errors' => [
                 array_merge($parents, [$field_name, 'add_more']),
             ],
             '#delta' => $delta,
             '#ajax' => [
-                'callback' => ['\Drupal\paragraphs_previewer\FormHandlers', 'ajaxSubmitPreviewerItem'],
+                'callback' => ['\Drupal\paragraphs_previewer_popup\FormHandlers', 'ajaxSubmitPreviewerItem'],
                 'wrapper' => $widget_state['ajax_wrapper_id'],
                 'effect' => 'fade',
             ],

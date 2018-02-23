@@ -7,25 +7,24 @@
 use Drupal\Core\Field\WidgetInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
-
-use Drupal\paragraphs_previewer\FormGenerator;
+use Drupal\paragraphs_previewer_popup\FormGenerator;
 
 /**
  * Implements hook_theme().
  */
-function paragraphs_previewer_theme() {
-  return array(
-    'paragraphs_previewer_modal_content' => array(
-      'variables' => array('preview_url' => NULL),
-      'file' => 'paragraphs_previewer.theme.inc',
-    ),
-  );
+function paragraphs_previewer_popup_theme() {
+  return [
+    'paragraphs_previewer_modal_content' => [
+      'variables' => ['preview_url' => NULL],
+      'file' => 'paragraphs_previewer_popup.theme.inc',
+    ],
+  ];
 }
 
 /**
  * Implements hook_preprocess_html().
  */
-function paragraphs_previewer_preprocess_html__paragraphs_previewer(&$variables) {
+function paragraphs_previewer_popup_preprocess_html__paragraphs_previewer_popup(&$variables) {
   unset($variables['page_top']);
   unset($variables['page_bottom']);
   if (isset($variables['html_attributes'])) {
@@ -38,7 +37,7 @@ function paragraphs_previewer_preprocess_html__paragraphs_previewer(&$variables)
 /**
  * Implements hook_preprocess_page().
  */
-function paragraphs_previewer_preprocess_page__paragraphs_previewer(&$variables) {
+function paragraphs_previewer_popup_preprocess_page__paragraphs_previewer_popup(&$variables) {
   if (!empty($variables['page'])) {
     $page_keys = \Drupal\Core\Render\Element::children($variables['page']);
     foreach ($page_keys as $page_key) {
@@ -59,9 +58,9 @@ function paragraphs_previewer_preprocess_page__paragraphs_previewer(&$variables)
 /**
  * Implements hook_field_widget_settings_summary_alter().
  */
-function paragraphs_previewer_field_widget_settings_summary_alter(&$summary, $context) {
+function paragraphs_previewer_popup_field_widget_settings_summary_alter(&$summary, $context) {
   if ($context['field_definition']->getType() == 'entity_reference_revisions') {
-    if ($context['widget']->getThirdPartySetting('paragraphs_previewer', 'enable')) {
+    if ($context['widget']->getThirdPartySetting('paragraphs_previewer_popup', 'enable')) {
       $summary[] = t('Preview enabled.');
     }
   }
@@ -70,14 +69,14 @@ function paragraphs_previewer_field_widget_settings_summary_alter(&$summary, $co
 /**
  * Implements hook_field_widget_third_party_settings_form().
  */
-function paragraphs_previewer_field_widget_third_party_settings_form(WidgetInterface $plugin, FieldDefinitionInterface $field_definition, $form_mode, $form, FormStateInterface $form_state) {
-  $element = array();
+function paragraphs_previewer_popup_field_widget_third_party_settings_form(WidgetInterface $plugin, FieldDefinitionInterface $field_definition, $form_mode, $form, FormStateInterface $form_state) {
+  $element = [];
   if ($field_definition->getType() == 'entity_reference_revisions') {
-    $element['enable'] = array(
+    $element['enable'] = [
       '#type' => 'checkbox',
       '#title' => t('Enable preview'),
-      '#default_value' => $plugin->getThirdPartySetting('paragraphs_previewer', 'enable'),
-    );
+      '#default_value' => $plugin->getThirdPartySetting('paragraphs_previewer_popup', 'enable'),
+    ];
   }
   return $element;
  }
@@ -85,9 +84,9 @@ function paragraphs_previewer_field_widget_third_party_settings_form(WidgetInter
 /**
  * Implements hook_field_widget_form_alter().
  */
-function paragraphs_previewer_field_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
+function paragraphs_previewer_popup_field_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
   if ($context['items']->getFieldDefinition()->getType() == 'entity_reference_revisions') {
-    if ($context['widget']->getThirdPartySetting('paragraphs_previewer', 'enable')) {
+    if ($context['widget']->getThirdPartySetting('paragraphs_previewer_popup', 'enable')) {
       FormGenerator::modifyParagraphsTop($element, $form_state, $context);
     }
   }

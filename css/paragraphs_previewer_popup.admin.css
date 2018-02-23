@@ -1,9 +1,9 @@
-.js .paragraphs-previewer__link-container {
+.js .paragraphs-previewer-popup__link-container {
     display: flex;
     flex-wrap: nowrap;
     padding-bottom: .5rem;
 }
-.js .paragraphs-previewer__link-container > div,
-.js .paragraphs-previewer__link-container > input {
+.js .paragraphs-previewer-popup__link-container > div,
+.js .paragraphs-previewer-popup__link-container > input {
     margin-left: 1rem;
 }

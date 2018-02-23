@@ -1,10 +1,10 @@
 dialog:
   version: 1.x
   js:
-    js/paragraphs_previewer.dialog.js: {}
+    js/paragraphs_previewer_popup.dialog.js: {}
   css:
     component:
-      css/paragraphs_previewer.dialog.css: {}
+      css/paragraphs_previewer_popup.dialog.css: {}
   dependencies:
     - core/jquery
     - core/jquery.ui.resizable
@@ -17,10 +17,10 @@ preview-page:
   version: 1.x
   css:
     component:
-      css/paragraphs_previewer.preview_page.css: {}
+      css/paragraphs_previewer_popup.preview_page.css: {}
 
 admin:
   version: 1.x
   css:
     component:
-      css/paragraphs_previewer.admin.css: {}
+      css/paragraphs_previewer_popup.admin.css: {}

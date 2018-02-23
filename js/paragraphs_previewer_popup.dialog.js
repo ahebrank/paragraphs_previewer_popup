@@ -31,7 +31,7 @@
    *   The combined dialog settings.
    */
   dialogUpdateForContent = function(dialog, $element, settings) {
-    var $content = $('.paragraphs-previewer-iframe', $element).contents().find('body');
+    var $content = $('.paragraphs-previewer-popup__iframe', $element).contents().find('body');
 
     if ($content.length) {
       // Fit content.
@@ -70,16 +70,16 @@
         },
         'dialog:aftercreate': function (event, dialog, $element, settings) {
           // Set body class to disable scrolling.
-          $('body').addClass('paragraphs-previewer-dialog-active');
+          $('body').addClass('paragraphs-previewer-popup-dialog-active');
           // Adjust dialog after all content is loaded.
-          $('.paragraphs-previewer-iframe').on('load', function() {
-            $element.addClass('paragraphs-previewer-dialog-loaded');
+          $('.paragraphs-previewer-popup__iframe').on('load', function() {
+            $element.addClass('paragraphs-previewer-popup-dialog-loaded');
             dialogUpdateForContent(dialog, $element, settings);
           });
         },
         'dialog:afterclose': function (event, dialog, $element) {
           // Remove body class to enable scrolling in the parent window.
-          $('body').removeClass('paragraphs-previewer-dialog-active');
+          $('body').removeClass('paragraphs-previewer-popup-dialog-active');
         }
       });
     }

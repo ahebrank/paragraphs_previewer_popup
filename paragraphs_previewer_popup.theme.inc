@@ -17,7 +17,7 @@ use Drupal\Component\Utility\Html;
  *   An associative array containing:
  *   - preview_url: The Drupal\Core\Url object for the preview.
  */
-function template_preprocess_paragraphs_previewer_modal_content(&$variables) {
+function template_preprocess_paragraphs_previewer_popup_modal_content(&$variables) {
   if (!empty($variables['preview_url'])) {
     $preview_url = $variables['preview_url'];
 
@@ -28,9 +28,9 @@ function template_preprocess_paragraphs_previewer_modal_content(&$variables) {
     // See http://drupal.stackexchange.com/questions/175697/menu-callback-and-csrf
     // See https://www.drupal.org/node/2575519
     $preview_url_bubbeable = $preview_url->toString(TRUE);
-    $preview_url_render = array(
+    $preview_url_render = [
       '#markup' => $preview_url_bubbeable->getGeneratedUrl(),
-    );
+    ];
     \Drupal\Core\Render\BubbleableMetadata::createFromRenderArray($preview_url_render)
       ->merge($preview_url_bubbeable)
       ->applyTo($preview_url_render);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\paragraphs_previewer;
+namespace Drupal\paragraphs_previewer_popup;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Ajax\AjaxResponse;
@@ -10,8 +10,8 @@ use Drupal\Core\Url;
 class FormHandlers {
     public static function ajaxSubmitPreviewerItem(array $form, FormStateInterface $form_state) {
         $preview_url = NULL;
-        $dialog_options = array(
-            'dialogClass' => 'paragraphs-previewer-ui-dialog',
+        $dialog_options = [
+            'dialogClass' => 'paragraphs-previewer-popup-ui-dialog',
             'minWidth' => 320,
             'width' => '98%',
             'minHeight' => 100,
@@ -22,14 +22,14 @@ class FormHandlers {
             'resizable' => TRUE,
             'closeOnEscape' => TRUE,
             'closeText' => '',
-        );
+        ];
         
         $previewer_element = $form_state->getTriggeringElement();
         $dialog_title = $previewer_element['#previewer_dialog_title'];
         
         // Build previewer callback url.
         if (!empty($previewer_element['#field_item_parents']) && !empty($form['#build_id'])) {
-            $route_name = 'paragraphs_previewer.form_preview';
+            $route_name = 'paragraphs_previewer_popup.form_preview';
             $route_parameters = [
                 'form_build_id' => $form['#build_id'],
                 'element_parents' => implode(':', $previewer_element['#field_item_parents']),
@@ -39,10 +39,10 @@ class FormHandlers {
         
         // Build modal content.
         $dialog_content = [
-            '#theme' => 'paragraphs_previewer_modal_content',
+            '#theme' => 'paragraphs_previewer_popup_modal_content',
             '#preview_url' => $preview_url,
             '#attached' => [
-                'library' => ['paragraphs_previewer/dialog'],
+                'library' => ['paragraphs_previewer_popup/dialog'],
             ],
         ];
         
