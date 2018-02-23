@@ -26,3 +26,8 @@ body.paragraphs-previewer #main-wrapper > #main > #content {
   padding: 0;
   margin: 0;
 }
+
+/* Set HTML background color to the same as the modal */
+html.paragraphs-previewer-html {
+  background-color: #232323;
+}

@@ -1,15 +1,14 @@
 <?php
+/**
+ * @file
+ * Provides a rendered preview of a paragraphs item on an entity form.
+ */
 
 use Drupal\Core\Field\WidgetInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 
 use Drupal\paragraphs_previewer\FormGenerator;
-
-/**
- * @file
- * Provides a rendered preview of a paragraphs item on an entity form.
- */
 
 /**
  * Implements hook_theme().

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\paragraphs_previewer\Controller\ParagraphsPreviewController.
- */
-
 namespace Drupal\paragraphs_previewer\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
