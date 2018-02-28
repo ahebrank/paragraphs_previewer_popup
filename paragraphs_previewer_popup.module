@@ -7,6 +7,7 @@
 use Drupal\Core\Field\WidgetInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
 use Drupal\paragraphs_previewer_popup\FormGenerator;
 
 /**
@@ -39,13 +40,13 @@ function paragraphs_previewer_popup_preprocess_html__paragraphs_previewer_popup(
  */
 function paragraphs_previewer_popup_preprocess_page__paragraphs_previewer_popup(&$variables) {
   if (!empty($variables['page'])) {
-    $page_keys = \Drupal\Core\Render\Element::children($variables['page']);
+    $page_keys = Element::children($variables['page']);
     foreach ($page_keys as $page_key) {
       if ($page_key != 'content') {
         unset($variables['page'][$page_key]);
       }
     }
-    $content_keys = \Drupal\Core\Render\Element::children($variables['page']['content']);
+    $content_keys = Element::children($variables['page']['content']);
     foreach ($content_keys as $content_key) {
       if (isset($variables['page']['content'][$content_key]['#base_plugin_id']) &&
           $variables['page']['content'][$content_key]['#base_plugin_id'] != 'system_main_block') {

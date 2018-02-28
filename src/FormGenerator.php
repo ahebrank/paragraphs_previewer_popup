@@ -7,9 +7,8 @@ use Drupal\Core\Field\WidgetBase;
 
 class FormGenerator {
     public static function modifyParagraphsTop(&$element, $form_state, $context) {
-        $links = $element['top']['links'];
-        unset($element['top']['links']);
-        $element['top']['link_container'] = [
+        $element['top']['#attributes']['class'][] = 'paragraphs-previewer--button-added';
+        $element['top']['previewer_container'] = [
             '#type' => 'container',
             '#attributes' => [
                 'class' => 'paragraphs-previewer-popup__link-container',
@@ -20,7 +19,6 @@ class FormGenerator {
                 ],
             ],
             'previewer_button' => self::getPreviewButton($context, $element, $form_state),
-            'links' => $links,
         ];
     }
 
