@@ -8,4 +8,9 @@
 .paragraphs-previewer-popup__link-container {
     margin-bottom: .5rem;
     margin-right: .5rem;
-}
+    }
+    .paragraphs-previewer-popup__link-container--experimental {
+        margin-bottom: 0;
+        margin-right: 0;
+        margin-left: .5rem;
+    }
