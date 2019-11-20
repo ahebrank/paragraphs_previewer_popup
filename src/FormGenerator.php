@@ -49,6 +49,10 @@ class FormGenerator {
     $parents = $element['#field_parents'];
     $delta = $element['#delta'];
 
+    if (!$parents) {
+      return [];
+    }
+
     $widget_state = WidgetBase::getWidgetState($parents, $field_name, $form_state);
     if (!isset($widget_state['paragraphs'][$delta]['mode']) ||
         !isset($widget_state['paragraphs'][$delta]['entity'])) {
