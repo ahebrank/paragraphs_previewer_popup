@@ -7,8 +7,8 @@ dialog:
       css/paragraphs_previewer_popup.dialog.css: {}
   dependencies:
     - core/jquery
-    - core/jquery.ui.resizable
-    - core/jquery.ui.draggable
+    - jquery_ui_resizable/resizable
+    - jquery_ui_draggable/draggable
     - core/drupalSettings
     - core/drupal.ajax
     - core/drupal.dialog.ajax
